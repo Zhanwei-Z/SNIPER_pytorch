@@ -2,6 +2,7 @@ import torch.nn as nn
 import torch
 import torch.nn.functional as F
 from convlstm import ConvLSTM
+import math
 
 
 class Evolution(nn.Module):
@@ -21,7 +22,7 @@ class Evolution(nn.Module):
             all_data_dynamic_now = torch.sigmoid(
                 torch.matmul(torch.cat([all_data_dynamic_now, all_data_static[i]], axis=-1), self.w1) \
                 * thre_nc[i].repeat(1, 1, self.dr2) + all_data_dynamic_now \
-                * (1 - thre_nc[i]).repeat(1, 1, self.dr2))
+                * (1 - thre_nc[i]).repeat(1, 1, self.dr2)) * math.exp(-1/2)
             all_data_dynamic_now_diff = all_data_dynamic_now - all_data_dynamic_now_diff
             all_data_dynamic_diff.append(torch.unsqueeze(all_data_dynamic_now_diff, 0))
             all_data_dynamic.append(torch.unsqueeze(all_data_dynamic_now, 0))
